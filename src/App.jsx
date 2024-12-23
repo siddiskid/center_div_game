@@ -52,20 +52,12 @@ function App() {
         }}
         className="block"
       ></div>
-      <div style={{ position: 'absolute', top: '5%', left: '10%' }}>Score</div>
-      <div style={{ position: 'absolute', top: '5%', left: '20%' }}>Coins</div>
-      <div style={{ position: 'absolute', top: '5%', left: '30%' }}>Highscore</div>
+      <div style={{ position: 'absolute', top: '5%', left: '10%' }}>Coins</div>
+      <div style={{ position: 'absolute', top: '12%', left: '10%' }}>Diamonds</div>
+      <div style={{ position: 'absolute', top: '12%', left: '90%' }}>Score</div>
+      <div style={{ position: 'absolute', top: '5%', left: '90%' }}>Highscore</div>
       <button
-        style={{ position: 'absolute', top: '5%', left: '80%' }}
-        onClick={() => {
-          set_curr_pos(0); // Reset position
-          set_dx(10); // Reset to moving right
-        }}
-      >
-        Restart
-      </button>
-      <button
-        style={{ position: 'absolute', top: '5%', left: '90%' }}
+        style={{ position: 'absolute', top: '5%', left: '49%' }}
         onClick={() => set_dx(0)} // Pause movement
       >
         Pause
