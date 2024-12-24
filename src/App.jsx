@@ -8,25 +8,27 @@ function App() {
   useEffect(() => {
     const interval = setInterval(() => {
       setBlocks((prevBlocks) =>
-        prevBlocks.map((block, index) => {
-          if (index === prevBlocks.length - 1) {
-            // Only move the top block
-            const nextLeft = block.left + dx;
+        prevBlocks
+          .map((block, index) => {
+            if (index === prevBlocks.length - 1) {
+              // Only move the top block
+              const nextLeft = block.left + dx;
 
-            if (nextLeft >= window.innerWidth - 100) {
-              setDx(-Math.abs(dx));
-              return { ...block, left: window.innerWidth - 100 };
+              if (nextLeft >= window.innerWidth - 100) {
+                setDx(-Math.abs(dx));
+                return { ...block, left: window.innerWidth - 100 };
+              }
+
+              if (nextLeft <= 0) {
+                setDx(Math.abs(dx));
+                return { ...block, left: 0 };
+              }
+
+              return { ...block, left: nextLeft };
             }
-
-            if (nextLeft <= 0) {
-              setDx(Math.abs(dx));
-              return { ...block, left: 0 };
-            }
-
-            return { ...block, left: nextLeft };
-          }
-          return block;
-        })
+            return block;
+          })
+          .filter((block) => block.top < window.innerHeight) // Remove blocks outside the view
       );
     }, 16.67);
 
@@ -36,15 +38,24 @@ function App() {
   const handleSpaceKey = (event) => {
     if (event.code === 'Space') {
       setBlocks((prevBlocks) => {
-        const newTop = prevBlocks[prevBlocks.length - 1].top - 25; // Spawn new block above
-        const updatedBlocks = prevBlocks.map((block, index) =>
-          index === prevBlocks.length - 1
-            ? { ...block, top: block.top + 25 } // Push the previous block down
-            : block
-        );
+        const newBlocks = prevBlocks.map((block) => ({
+          ...block,
+          top: block.top + 25, // Move all blocks down
+        }));
+
+        // Ensure no multiple blocks are added when out of bounds
+        if (newBlocks.length > 0 && newBlocks[newBlocks.length - 1].top >= window.innerHeight - 25) {
+          return newBlocks;
+        }
+
+        // Add a new block only if within bounds
+        const newTop = newBlocks.length
+          ? newBlocks[newBlocks.length - 1].top - 25
+          : window.innerHeight / 2 - 25; // Default new block position
+
         return [
-          ...updatedBlocks,
-          { id: prevBlocks.length, left: 0, top: newTop }, // New block starts from the left
+          ...newBlocks,
+          { id: prevBlocks.length, left: 0, top: newTop }, // Add new block at the top
         ];
       });
     }
@@ -80,7 +91,7 @@ function App() {
       <div style={{ position: 'absolute', top: '5%', left: '90%' }}>Highscore</div>
       <button
         style={{ position: 'absolute', top: '5%', left: '49%' }}
-        onClick={() => setDx(0)} 
+        onClick={() => setDx(0)}
       >
         Pause
       </button>
