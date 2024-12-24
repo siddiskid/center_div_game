@@ -2,35 +2,51 @@ import { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
-  const [curr_pos, set_curr_pos] = useState(0);
-  const [dx, set_dx] = useState(10); // Initial direction is positive (moving right)
+  const [blocks, setBlocks] = useState([{ id: 0, left: 0, top: window.innerHeight / 2 }]);
+  const [dx, setDx] = useState(10);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      set_curr_pos((prev_pos) => {
-        const next_pos = prev_pos + dx;
+      setBlocks((prevBlocks) =>
+        prevBlocks.map((block, index) => {
+          if (index === prevBlocks.length - 1) {
+            // Only move the top block
+            const nextLeft = block.left + dx;
 
-        // Check boundaries
-        if (next_pos >= window.innerWidth - 50) {
-          set_dx(-Math.abs(dx)); // Reverse direction to left
-          return window.innerWidth - 50; // Stay at the right edge
-        }
+            if (nextLeft >= window.innerWidth - 100) {
+              setDx(-Math.abs(dx));
+              return { ...block, left: window.innerWidth - 100 };
+            }
 
-        if (next_pos <= 0) {
-          set_dx(Math.abs(dx)); // Reverse direction to right
-          return 0; // Stay at the left edge
-        }
+            if (nextLeft <= 0) {
+              setDx(Math.abs(dx));
+              return { ...block, left: 0 };
+            }
 
-        return next_pos;
-      });
-    }, 16.67); // ~60 frames per second
+            return { ...block, left: nextLeft };
+          }
+          return block;
+        })
+      );
+    }, 16.67);
 
     return () => clearInterval(interval);
-  }, [dx]); // Re-run effect if `dx` changes
+  }, [dx]);
 
   const handleSpaceKey = (event) => {
     if (event.code === 'Space') {
-      set_dx(0); // Pause movement
+      setBlocks((prevBlocks) => {
+        const newTop = prevBlocks[prevBlocks.length - 1].top - 25; // Spawn new block above
+        const updatedBlocks = prevBlocks.map((block, index) =>
+          index === prevBlocks.length - 1
+            ? { ...block, top: block.top + 25 } // Push the previous block down
+            : block
+        );
+        return [
+          ...updatedBlocks,
+          { id: prevBlocks.length, left: 0, top: newTop }, // New block starts from the left
+        ];
+      });
     }
   };
 
@@ -44,21 +60,27 @@ function App() {
 
   return (
     <>
-      <div
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: `${curr_pos}px`,
-        }}
-        className="block"
-      ></div>
+      {blocks.map((block) => (
+        <div
+          key={block.id}
+          style={{
+            position: 'absolute',
+            width: '100px', // Block width
+            height: '25px', // Block height
+            backgroundColor: 'blue',
+            top: `${block.top}px`,
+            left: `${block.left}px`,
+          }}
+          className="block"
+        ></div>
+      ))}
       <div style={{ position: 'absolute', top: '5%', left: '10%' }}>Coins</div>
       <div style={{ position: 'absolute', top: '12%', left: '10%' }}>Diamonds</div>
       <div style={{ position: 'absolute', top: '12%', left: '90%' }}>Score</div>
       <div style={{ position: 'absolute', top: '5%', left: '90%' }}>Highscore</div>
       <button
         style={{ position: 'absolute', top: '5%', left: '49%' }}
-        onClick={() => set_dx(0)} // Pause movement
+        onClick={() => setDx(0)} 
       >
         Pause
       </button>
