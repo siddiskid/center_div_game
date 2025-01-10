@@ -7,17 +7,56 @@ html, body {
   position: relative;
   font-family: "Comfortaa", cursive;
 }
-
 #container {
   width: 100%;
   height: 100%;
 }
+#container #coins {
+  position: absolute;
+  top: 40px;
+  left: 50px;
+  text-align: center;
+  font-size: 8vh;
+  transition: transform 0.5s ease;
+  color: #333344;
+  transform: translatey(-200px) scale(1);
+}
+#container #diamonds {
+  position: absolute;
+  top: 120px;
+  left: 50px;
+  text-align: center;
+  font-size: 8vh;
+  transition: transform 0.5s ease;
+  color: #333344;
+  transform: translatey(-200px) scale(1);
+}
+#container #pause {
+  position: absolute;
+  top: 40px;
+  right: 45%;
+  text-align: center;
+  font-size: 8vh;
+  transition: transform 0.5s ease;
+  color: #333344;
+  transform: translatey(-200px) scale(1);
+}
 #container #score {
   position: absolute;
-  top: 20px;
-  width: 100%;
+  top: 40px;
+  right: 50px;
   text-align: center;
-  font-size: 10vh;
+  font-size: 8vh;
+  transition: transform 0.5s ease;
+  color: #333344;
+  transform: translatey(-200px) scale(1);
+}
+#container #highscore {
+  position: absolute;
+  top: 120px;
+  right: 50px;
+  text-align: center;
+  font-size: 8vh;
   transition: transform 0.5s ease;
   color: #333344;
   transform: translatey(-200px) scale(1);
@@ -85,6 +124,18 @@ html, body {
   opacity: 0 !important;
 }
 #container.playing #score, #container.resetting #score {
+  transform: translatey(0px) scale(1);
+}
+#container.playing #highscore, #container.resetting #highscore {
+  transform: translatey(0px) scale(1);
+}
+#container.playing #pause, #container.resetting #pause {
+  transform: translatey(0px) scale(1);
+}
+#container.playing #coins, #container.resetting #coins {
+  transform: translatey(0px) scale(1);
+}
+#container.playing #diamonds, #container.resetting #diamonds {
   transform: translatey(0px) scale(1);
 }
 #container.playing #instructions {

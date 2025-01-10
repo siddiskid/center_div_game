@@ -180,9 +180,6 @@ class Game {
             if (e.keyCode == 32)
                 this.onAction();
         });
-        document.addEventListener('click', e => {
-            this.onAction();
-        });
         document.addEventListener('touchstart', e => {
             e.preventDefault();
         });
